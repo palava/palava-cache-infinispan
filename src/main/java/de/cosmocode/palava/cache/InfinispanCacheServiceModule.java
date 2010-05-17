@@ -30,7 +30,7 @@ public final class InfinispanCacheServiceModule implements Module {
      * <h4> Optional parameters: </h4>
      * <dl>
      *   <dt> infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode}) </dt>
-     *   <dd> The mode to use when the cache overflows and elements have to be removed from cache. <br />
+     *   <dd> The mode to use when the cache overflows and elements have to be removed from cache.
      *        Possible values:
      *        {@linkplain CacheMode#FIFO FIFO},
      *        {@linkplain CacheMode#LRU LRU},
@@ -59,6 +59,6 @@ public final class InfinispanCacheServiceModule implements Module {
         binder.bind(CacheService.class).to(InfinispanCacheService.class).asEagerSingleton();
     }
 
-    // TODO named RebindModule, or with annotation (like 
+    // TODO: named RebindModule, or with annotation (like FileSystemStoreModule)
 
 }
