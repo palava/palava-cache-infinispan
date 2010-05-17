@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.rhq.helpers:rhq-pluginAnnotations:1.4.0.B01">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rhq/helpers/rhq-pluginAnnotations/1.4.0.B01/rhq-pluginAnnotations-1.4.0.B01.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rhq/helpers/rhq-pluginAnnotations/1.4.0.B01/rhq-pluginAnnotations-1.4.0.B01-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/rhq/helpers/rhq-pluginAnnotations/1.4.0.B01/rhq-pluginAnnotations-1.4.0.B01-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

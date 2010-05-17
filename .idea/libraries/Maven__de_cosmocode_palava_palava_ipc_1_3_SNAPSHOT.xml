@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.cosmocode.palava:palava-ipc:1.3-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/cosmocode/palava/palava-ipc/1.3-SNAPSHOT/palava-ipc-1.3-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/cosmocode/palava/palava-ipc/1.3-SNAPSHOT/palava-ipc-1.3-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/cosmocode/palava/palava-ipc/1.3-SNAPSHOT/palava-ipc-1.3-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
