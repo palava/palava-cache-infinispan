@@ -83,6 +83,7 @@ final class InfinispanCacheService implements CacheService, Initializable {
 
     @Inject(optional = true)
     public void setMaxEntries(@Named(InfinispanCacheConfig.MAX_ENTRIES) final int maxEntries) {
+        Preconditions.checkState(maxEntries >= 0, "Max entries must be positive or 0, not %s", maxEntries);
         this.config.setEvictionMaxEntries(maxEntries);
     }
 
