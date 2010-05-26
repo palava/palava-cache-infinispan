@@ -23,7 +23,7 @@ package de.cosmocode.palava.cache;
  */
 public final class InfinispanCacheConfig {
 
-    public static final String PREFIX = "infinispan.";
+    public static final String PREFIX = CacheConfig.PREFIX + "infinispan.";
 
     public static final String CONFIG = PREFIX + "config";
 

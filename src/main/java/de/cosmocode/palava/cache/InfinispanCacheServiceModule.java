@@ -35,6 +35,10 @@ import java.net.URL;
  * </p>
  * <p> For further documentation look at the constructor ({@link #InfinispanCacheServiceModule()}).
  * </p>
+ * <p> If you want to use several CacheServices you can use binding annotations with 
+ * the static method {@link #annotatedWith(Class, String)}
+ * and annotate each and every use of CacheService with these annotations.
+ * </p>
  *
  * @author Oliver Lorenz
  */
@@ -44,23 +48,23 @@ public final class InfinispanCacheServiceModule implements Module {
      * <h3> Binds the infinispan cache implementation to CacheService. </h3>
      * <h4> Necessary guice parameters: </h4>
      * <dl>
-     *   <dt> infinispan.config (URL)
+     *   <dt> cache.infinispan.config (URL)
      *   <dd> The xml configuration file for infinispan, as a URL.
-     *   <dt> infinispan.name (String)
+     *   <dt> cache.infinispan.name (String)
      *   <dd> The name for the infinispan cache configuration.
      *        This can be a pre-configured entry in the xml or directly.
      * </dl>
      * <h4> Optional parameters: </h4>
      * <dl>
-     *   <dt> infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode})
+     *   <dt> cache.infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode})
      *   <dd> The mode to use when the cache overflows and elements have to be removed from cache.
      *        Possible values:
      *        {@linkplain CacheMode#FIFO FIFO},
      *        {@linkplain CacheMode#LRU LRU},
      *        {@linkplain CacheMode#UNLIMITED UNLIMITED}
-     *   <dt> infinispan.maxEntries (int)
+     *   <dt> cache.infinispan.maxEntries (int)
      *   <dd> The maximum number of elements in cache, at any time
-     *   <dt> infinispan.replicationMode ({@link org.infinispan.config.Configuration.CacheMode})
+     *   <dt> cache.infinispan.replicationMode ({@link org.infinispan.config.Configuration.CacheMode})
      *   <dd> Cache replication mode. Possible values:
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#LOCAL LOCAL},
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#REPL_SYNC REPL_SYNC},
@@ -84,7 +88,7 @@ public final class InfinispanCacheServiceModule implements Module {
      * <p> Rebinds all configuration entries using the specified prefix for configuration
      * keys and the supplied annoation for annotation rebindings.
      * </p>
-     * <p> The config parameters must be given as <code> (prefix).infinispan.(...) </code>
+     * <p> The config parameters must be given as <code> (prefix).cache.infinispan.(...) </code>
      * </p>
      * <p> Have a look at the {@linkplain #InfinispanCacheServiceModule() constructor}
      * for a documentation of all configuration parameters.
