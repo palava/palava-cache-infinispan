@@ -22,7 +22,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-import de.cosmocode.palava.core.inject.AbstractRebindingModule;
+import de.cosmocode.palava.core.inject.AbstractRebindModule;
 import de.cosmocode.palava.core.inject.Config;
 import de.cosmocode.palava.core.inject.RebindModule;
 import org.infinispan.config.Configuration;
@@ -89,7 +89,7 @@ public final class InfinispanCacheServiceModule implements Module {
      * <p> The config parameters must be given as <code> (prefix).infinispan.(...) </code>
      * </p>
      * <p> Have a look at the {@linkplain #InfinispanCacheServiceModule() constructor}
-     * for a documentation on all configuration parameters.
+     * for a documentation of all configuration parameters.
      * </p>
      *
      * @param annotation the new binding annotation
@@ -109,7 +109,7 @@ public final class InfinispanCacheServiceModule implements Module {
      * @author Oliver Lorenz
      * @author Willi Schoenborn
      */
-    private static final class AnnotatedInstanceModule extends AbstractRebindingModule {
+    private static final class AnnotatedInstanceModule extends AbstractRebindModule {
 
         private final Class<? extends Annotation> annotation;
         private final Config config;
