@@ -23,28 +23,20 @@ package de.cosmocode.palava.cache;
  */
 public final class InfinispanCacheConfig {
 
-
-    private static final String CONFIG_SUFFIX = "config";
-
-    private static final String NAME_SUFFIX = "name";
-
-    private static final String CACHE_MODE_SUFFIX = "cacheMode";
-
-    private static final String REPLICATIN_MODE_SUFFIX = "replicationMode";
-
-    private static final String MAX_ENTRIES_SUFFIX = "maxEntries";
-
-
     public static final String PREFIX = "infinispan.";
 
-    public static final String CONFIG = PREFIX + CONFIG_SUFFIX;
+    public static final String CONFIG = PREFIX + "config";
 
-    public static final String NAME = PREFIX + NAME_SUFFIX;
+    public static final String NAME = PREFIX + "name";
 
-    public static final String CACHE_MODE = PREFIX + CACHE_MODE_SUFFIX;
+    public static final String CACHE_MODE = PREFIX + "cacheMode";
 
-    public static final String REPLICATION_MODE = PREFIX + REPLICATIN_MODE_SUFFIX;
+    public static final String REPLICATION_MODE = PREFIX + "replicationMode";
 
-    public static final String MAX_ENTRIES = PREFIX + MAX_ENTRIES_SUFFIX;
+    public static final String MAX_ENTRIES = PREFIX + "maxEntries";
+    
+    private InfinispanCacheConfig() {
+        
+    }
 
 }

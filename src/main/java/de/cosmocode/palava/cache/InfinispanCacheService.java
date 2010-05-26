@@ -42,23 +42,16 @@ import java.util.concurrent.TimeUnit;
 final class InfinispanCacheService implements CacheService, Initializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(InfinispanCacheService.class);
-
     private static final String MAX_AGE_NEGATIVE = "Max age must not be negative, but was %s";
-    
 
     private final CacheManager manager;
-
     private final Configuration config;
-
-    private Cache<Serializable, Object> cache;
-
-
     private final String name;
 
     private long maxAge = DEFAULT_MAX_AGE;
-
     private TimeUnit maxAgeUnit = DEFAULT_MAX_AGE_TIMEUNIT;
 
+    private Cache<Serializable, Object> cache;
 
     @Inject
     public InfinispanCacheService(
@@ -70,23 +63,37 @@ final class InfinispanCacheService implements CacheService, Initializable {
         this.name = name;
     }
 
+    /**
+     * Sets the cache mode for this infinispan cache.
+     * 
+     * @param cacheMode the cache mode
+     */
     @Inject(optional = true)
-    public void setCacheMode(@Named(InfinispanCacheConfig.CACHE_MODE) final CacheMode cacheMode) {
+    void setCacheMode(@Named(InfinispanCacheConfig.CACHE_MODE) final CacheMode cacheMode) {
         this.config.setEvictionStrategy(of(cacheMode));
     }
 
+    /**
+     * Sets the replication mode ({@link Configuration.CacheMode}).
+     * 
+     * @param replicationMode replication mode
+     */
     @Inject(optional = true)
-    public void setReplicationMode(
+    void setReplicationMode(
         @Named(InfinispanCacheConfig.REPLICATION_MODE) Configuration.CacheMode replicationMode) {
         this.config.setCacheMode(replicationMode);
     }
 
+    /**
+     * Sets the maximum number of entries in the cache.
+     * 
+     * @param maxEntries maximum number of entries in the cache
+     */
     @Inject(optional = true)
-    public void setMaxEntries(@Named(InfinispanCacheConfig.MAX_ENTRIES) final int maxEntries) {
-        Preconditions.checkState(maxEntries >= 0, "Max entries must be positive or 0, not %s", maxEntries);
+    void setMaxEntries(@Named(InfinispanCacheConfig.MAX_ENTRIES) final int maxEntries) {
+        Preconditions.checkState(maxEntries >= 0, "Max entries must not be negative, but was %s", maxEntries);
         this.config.setEvictionMaxEntries(maxEntries);
     }
-
 
     private EvictionStrategy of(CacheMode mode) {
         switch (mode) {
@@ -129,12 +136,12 @@ final class InfinispanCacheService implements CacheService, Initializable {
     }
 
     @Override
-    public void setMaxAge(long maxAge, TimeUnit maxAgeUnit) {
-        Preconditions.checkArgument(maxAge >= 0, MAX_AGE_NEGATIVE, maxAge);
-        Preconditions.checkNotNull(maxAgeUnit, "MaxAge TimeUnit");
+    public void setMaxAge(long newMaxAge, TimeUnit newMaxAgeUnit) {
+        Preconditions.checkArgument(newMaxAge >= 0, MAX_AGE_NEGATIVE, newMaxAge);
+        Preconditions.checkNotNull(newMaxAgeUnit, "MaxAge TimeUnit");
 
-        this.maxAge = maxAge;
-        this.maxAgeUnit = maxAgeUnit;
+        this.maxAge = newMaxAge;
+        this.maxAgeUnit = newMaxAgeUnit;
     }
 
     @Override
@@ -150,13 +157,13 @@ final class InfinispanCacheService implements CacheService, Initializable {
     }
 
     @Override
-    public void store(Serializable key, Object value, long maxAge, TimeUnit maxAgeUnit) {
+    public void store(Serializable key, Object value, long customMaxAge, TimeUnit customMaxAgeUnit) {
         Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-        Preconditions.checkArgument(maxAge >= 0, MAX_AGE_NEGATIVE, maxAge);
-        Preconditions.checkNotNull(maxAgeUnit, "MaxAge TimeUnit");
+        Preconditions.checkArgument(customMaxAge >= 0, MAX_AGE_NEGATIVE, customMaxAge);
+        Preconditions.checkNotNull(customMaxAgeUnit, "MaxAge TimeUnit");
 
-        cache.put(key, value, maxAge, maxAgeUnit);
+        cache.put(key, value, customMaxAge, customMaxAgeUnit);
     }
 
     @Override

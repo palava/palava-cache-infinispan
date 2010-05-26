@@ -34,6 +34,9 @@ public class InfinispanCacheServiceTest extends CacheServiceTest {
 
     private static URL config;
 
+    /**
+     * Loads the config file before the test case starts.
+     */
     @BeforeClass
     public static void loadConfig() {
         config = InfinispanCacheServiceTest.class.getClassLoader().getResource("infinispan.xml");

@@ -44,24 +44,23 @@ public final class InfinispanCacheServiceModule implements Module {
      * <h3> Binds the infinispan cache implementation to CacheService. </h3>
      * <h4> Necessary guice parameters: </h4>
      * <dl>
-     *   <dt> infinispan.config (URL) </dt>
-     *   <dd> The xml configuration file for infinispan, as a URL. </dd>
-     *   <dt> infinispan.name (String) </dt>
+     *   <dt> infinispan.config (URL)
+     *   <dd> The xml configuration file for infinispan, as a URL.
+     *   <dt> infinispan.name (String)
      *   <dd> The name for the infinispan cache configuration.
-     *        This can be a pre-configured entry in the xml or directly. </dd>
+     *        This can be a pre-configured entry in the xml or directly.
      * </dl>
      * <h4> Optional parameters: </h4>
      * <dl>
-     *   <dt> infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode}) </dt>
+     *   <dt> infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode})
      *   <dd> The mode to use when the cache overflows and elements have to be removed from cache.
      *        Possible values:
      *        {@linkplain CacheMode#FIFO FIFO},
      *        {@linkplain CacheMode#LRU LRU},
      *        {@linkplain CacheMode#UNLIMITED UNLIMITED}
-     *   </dd>
-     *   <dt> infinispan.maxEntries (int) </dt>
-     *   <dd> The maximum number of elements in cache, at any time </dd>
-     *   <dt> infinispan.replicationMode ({@link org.infinispan.config.Configuration.CacheMode}) </dt>
+     *   <dt> infinispan.maxEntries (int)
+     *   <dd> The maximum number of elements in cache, at any time
+     *   <dt> infinispan.replicationMode ({@link org.infinispan.config.Configuration.CacheMode})
      *   <dd> Cache replication mode. Possible values:
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#LOCAL LOCAL},
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#REPL_SYNC REPL_SYNC},
@@ -70,7 +69,6 @@ public final class InfinispanCacheServiceModule implements Module {
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#INVALIDATION_ASYNC INVALIDATION_ASYNC},
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#DIST_SYNC DIST_SYNC},
      *        {@linkplain org.infinispan.config.Configuration.CacheMode#DIST_ASYNC DIST_ASYNC}
-     *   </dd>
      * </dl>
      */
     public InfinispanCacheServiceModule() {
@@ -133,10 +131,9 @@ public final class InfinispanCacheServiceModule implements Module {
                 Key.get(CacheMode.class, Names.named(config.prefixed(InfinispanCacheConfig.CACHE_MODE))));
             bind(int.class).annotatedWith(Names.named(InfinispanCacheConfig.MAX_ENTRIES)).to(
                 Key.get(int.class, Names.named(config.prefixed(InfinispanCacheConfig.MAX_ENTRIES))));
-            bind(Configuration.CacheMode.class).
-                annotatedWith(Names.named(InfinispanCacheConfig.REPLICATION_MODE)).to(
-                Key.get(Configuration.CacheMode.class,
-                Names.named(config.prefixed(InfinispanCacheConfig.REPLICATION_MODE))));
+            bind(Configuration.CacheMode.class).annotatedWith(Names.named(InfinispanCacheConfig.REPLICATION_MODE)).to(
+                Key.get(Configuration.CacheMode.class, 
+                    Names.named(config.prefixed(InfinispanCacheConfig.REPLICATION_MODE))));
         }
 
         @Override
