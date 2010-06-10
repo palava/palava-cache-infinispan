@@ -16,12 +16,12 @@
 
 package de.cosmocode.palava.cache;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * Tests {@link de.cosmocode.palava.cache.InfinispanCacheService} as a CacheService.

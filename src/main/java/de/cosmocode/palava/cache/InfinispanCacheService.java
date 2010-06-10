@@ -16,11 +16,11 @@
 
 package de.cosmocode.palava.cache;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import de.cosmocode.palava.core.lifecycle.Initializable;
-import de.cosmocode.palava.core.lifecycle.LifecycleException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import org.infinispan.Cache;
 import org.infinispan.config.Configuration;
 import org.infinispan.eviction.EvictionStrategy;
@@ -29,10 +29,12 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
+import de.cosmocode.palava.core.lifecycle.Initializable;
+import de.cosmocode.palava.core.lifecycle.LifecycleException;
 
 /**
  * Infinispan cache implementation of {@link CacheService}.
