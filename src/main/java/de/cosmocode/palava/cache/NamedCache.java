@@ -16,27 +16,15 @@
 
 package de.cosmocode.palava.cache;
 
+import com.google.inject.BindingAnnotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
- * The configuration for the infinispan cache ({@link InfinispanCacheService}).
- *
- * @author Oliver Lorenz
+ * @author Tobias Sarnowski
  */
-public final class InfinispanCacheConfig {
-
-    public static final String PREFIX = CacheConfig.PREFIX + "infinispan.";
-
-    public static final String CONFIG = PREFIX + "config";
-
-    public static final String NAME = PREFIX + "name";
-
-    public static final String CACHE_MODE = PREFIX + "cacheMode";
-
-    public static final String REPLICATION_MODE = PREFIX + "replicationMode";
-
-    public static final String MAX_ENTRIES = PREFIX + "maxEntries";
-    
-    private InfinispanCacheConfig() {
-        
-    }
-
+@BindingAnnotation
+@Retention(RetentionPolicy.RUNTIME)
+@interface NamedCache {
 }

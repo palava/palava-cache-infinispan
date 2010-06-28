@@ -16,39 +16,24 @@
 
 package de.cosmocode.palava.cache;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import org.infinispan.Cache;
-import org.infinispan.config.Configuration;
-import org.infinispan.eviction.EvictionStrategy;
-import org.infinispan.manager.CacheManager;
-import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-
-import de.cosmocode.palava.core.lifecycle.Initializable;
-import de.cosmocode.palava.core.lifecycle.LifecycleException;
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Infinispan cache implementation of {@link CacheService}.
  *
  * @author Oliver Lorenz
  */
-final class InfinispanCacheService implements CacheService, Initializable {
+final class InfinispanCacheService implements CacheService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InfinispanCacheService.class);
     private static final String MAX_AGE_NEGATIVE = "Max age must not be negative, but was %s";
-
-    private final CacheManager manager;
-    private final Configuration config;
-    private final String name;
 
     private long maxAge = DEFAULT_MAX_AGE;
     private TimeUnit maxAgeUnit = DEFAULT_MAX_AGE_TIMEUNIT;
@@ -56,70 +41,8 @@ final class InfinispanCacheService implements CacheService, Initializable {
     private Cache<Serializable, Object> cache;
 
     @Inject
-    public InfinispanCacheService(
-        @Named(InfinispanCacheConfig.CONFIG) URL config,
-        @Named(InfinispanCacheConfig.NAME) String name) throws IOException {
-        
-        this.manager = new DefaultCacheManager(config.openStream());
-        this.config = new Configuration();
-        this.name = name;
-    }
-
-    /**
-     * Sets the cache mode for this infinispan cache.
-     * 
-     * @param cacheMode the cache mode
-     */
-    @Inject(optional = true)
-    void setCacheMode(@Named(InfinispanCacheConfig.CACHE_MODE) final CacheMode cacheMode) {
-        this.config.setEvictionStrategy(of(cacheMode));
-    }
-
-    /**
-     * Sets the replication mode ({@link Configuration.CacheMode}).
-     * 
-     * @param replicationMode replication mode
-     */
-    @Inject(optional = true)
-    void setReplicationMode(
-        @Named(InfinispanCacheConfig.REPLICATION_MODE) Configuration.CacheMode replicationMode) {
-        this.config.setCacheMode(replicationMode);
-    }
-
-    /**
-     * Sets the maximum number of entries in the cache.
-     * 
-     * @param maxEntries maximum number of entries in the cache
-     */
-    @Inject(optional = true)
-    void setMaxEntries(@Named(InfinispanCacheConfig.MAX_ENTRIES) final int maxEntries) {
-        Preconditions.checkState(maxEntries >= 0, "Max entries must not be negative, but was %s", maxEntries);
-        this.config.setEvictionMaxEntries(maxEntries);
-    }
-
-    private EvictionStrategy of(CacheMode mode) {
-        switch (mode) {
-            case LRU: {
-                return EvictionStrategy.LRU;
-            }
-            case FIFO: {
-                return EvictionStrategy.FIFO;
-            }
-            case UNLIMITED: {
-                return EvictionStrategy.NONE;
-            }
-            default: {
-                throw new UnsupportedOperationException(mode.name());
-            }
-        }
-    }
-
-
-    @Override
-    public void initialize() throws LifecycleException {
-        manager.defineConfiguration(name, config);
-        cache = manager.getCache(name);
-        LOG.debug("Initializing cache {} with name {}", cache, name);
+    public InfinispanCacheService(@NamedCache Cache cache) {
+        this.cache = cache;
     }
 
     @Override

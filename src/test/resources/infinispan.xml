@@ -21,4 +21,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:infinispan:config:4.0 infinispan-config-4.0.xsd"
         xmlns="urn:infinispan:config:4.0">
+
+    <namedCache name="testcache">
+
+    </namedCache>
 </infinispan>

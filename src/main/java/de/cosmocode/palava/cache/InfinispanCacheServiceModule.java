@@ -16,141 +16,60 @@
 
 package de.cosmocode.palava.cache;
 
-import java.lang.annotation.Annotation;
-import java.net.URL;
-
-import org.infinispan.config.Configuration;
-
 import com.google.common.base.Preconditions;
-import com.google.inject.Binder;
 import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import com.google.inject.name.Names;
-
 import de.cosmocode.palava.core.inject.AbstractRebindModule;
-import de.cosmocode.palava.core.inject.Config;
-import de.cosmocode.palava.core.inject.RebindModule;
+import org.infinispan.Cache;
+
+import java.lang.annotation.Annotation;
 
 /**
- * <p> Binds InfinispanCacheService to CacheService.
- * </p>
- * <p> For further documentation look at the constructor ({@link #InfinispanCacheServiceModule()}).
- * </p>
- * <p> If you want to use several CacheServices you can use binding annotations with 
- * the static method {@link #annotatedWith(Class, String)}
- * and annotate each and every use of CacheService with these annotations.
- * </p>
- *
  * @author Oliver Lorenz
  */
-public final class InfinispanCacheServiceModule implements Module {
+public final class InfinispanCacheServiceModule extends AbstractRebindModule {
 
-    /**
-     * <h3> Binds the infinispan cache implementation to CacheService. </h3>
-     * <h4> Necessary guice parameters: </h4>
-     * <dl>
-     *   <dt> cache.infinispan.config (URL)
-     *   <dd> The xml configuration file for infinispan, as a URL.
-     *   <dt> cache.infinispan.name (String)
-     *   <dd> The name for the infinispan cache configuration.
-     *        This can be a pre-configured entry in the xml or directly.
-     * </dl>
-     * <h4> Optional parameters: </h4>
-     * <dl>
-     *   <dt> cache.infinispan.cacheMode ({@link de.cosmocode.palava.cache.CacheMode})
-     *   <dd> The mode to use when the cache overflows and elements have to be removed from cache.
-     *        Possible values:
-     *        {@linkplain CacheMode#FIFO FIFO},
-     *        {@linkplain CacheMode#LRU LRU},
-     *        {@linkplain CacheMode#UNLIMITED UNLIMITED}
-     *   <dt> cache.infinispan.maxEntries (int)
-     *   <dd> The maximum number of elements in cache, at any time
-     *   <dt> cache.infinispan.replicationMode ({@link org.infinispan.config.Configuration.CacheMode})
-     *   <dd> Cache replication mode. Possible values:
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#LOCAL LOCAL},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#REPL_SYNC REPL_SYNC},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#REPL_ASYNC REPL_ASYNC},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#INVALIDATION_SYNC INVALIDATION_SYNC},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#INVALIDATION_ASYNC INVALIDATION_ASYNC},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#DIST_SYNC DIST_SYNC},
-     *        {@linkplain org.infinispan.config.Configuration.CacheMode#DIST_ASYNC DIST_ASYNC}
-     * </dl>
-     */
-    public InfinispanCacheServiceModule() {
-        // constructor does nothing special, but is used for documentation
+    private final String cacheName;
+    private final Class<? extends Annotation> annotation;
+
+    public InfinispanCacheServiceModule(String cacheName) {
+        Preconditions.checkNotNull(cacheName, "CacheName");
+        this.cacheName = cacheName;
+        this.annotation = null;
+    }
+
+    public InfinispanCacheServiceModule(String cacheName, Class<? extends Annotation> annotation) {
+        Preconditions.checkNotNull(cacheName, "CacheName");
+        Preconditions.checkNotNull(annotation, "Annotation");
+        this.cacheName = cacheName;
+        this.annotation = annotation;
     }
 
     @Override
-    public void configure(Binder binder) {
-        binder.bind(CacheService.class).to(InfinispanCacheService.class).asEagerSingleton();
+    protected void configuration() {
+        bind(Cache.class).annotatedWith(NamedCache.class).to(Key.get(Cache.class, Names.named(cacheName)));
     }
 
-    /**
-     * <p> Rebinds all configuration entries using the specified prefix for configuration
-     * keys and the supplied annoation for annotation rebindings.
-     * </p>
-     * <p> The config parameters must be given as <code> (prefix).cache.infinispan.(...) </code>
-     * </p>
-     * <p> Have a look at the {@linkplain #InfinispanCacheServiceModule() constructor}
-     * for a documentation of all configuration parameters.
-     * </p>
-     *
-     * @param annotation the new binding annotation
-     * @param prefix the prefix
-     * @return a module which rebinds all required settings
-     */
-    public static RebindModule annotatedWith(Class<? extends Annotation> annotation, String prefix) {
-        Preconditions.checkNotNull(annotation, "Annotation");
-        Preconditions.checkNotNull(prefix, "Prefix");
-        return new AnnotatedInstanceModule(annotation, prefix);
+    @Override
+    protected void optionals() {
     }
 
-    /**
-     * Internal {@link RebindModule} implementation.
-     *
-     * @since 2.0
-     * @author Oliver Lorenz
-     * @author Willi Schoenborn
-     */
-    private static final class AnnotatedInstanceModule extends AbstractRebindModule {
-
-        private final Class<? extends Annotation> annotation;
-        private final Config config;
-
-        private AnnotatedInstanceModule(Class<? extends Annotation> annotation, String prefix) {
-            this.annotation = annotation;
-            this.config = new Config(prefix);
+    @Override
+    protected void bindings() {
+        if (annotation == null) {
+            bind(CacheService.class).to(InfinispanCacheService.class).asEagerSingleton();
+        } else {
+            bind(CacheService.class).annotatedWith(annotation).to(InfinispanCacheService.class).asEagerSingleton();
         }
+    }
 
-        @Override
-        protected void configuration() {
-            bind(URL.class).annotatedWith(Names.named(InfinispanCacheConfig.CONFIG)).to(
-                Key.get(URL.class, Names.named(config.prefixed(InfinispanCacheConfig.CONFIG))));
-            bind(String.class).annotatedWith(Names.named(InfinispanCacheConfig.NAME)).to(
-                Key.get(String.class, Names.named(config.prefixed(InfinispanCacheConfig.NAME))));
-        }
-
-        @Override
-        protected void optionals() {
-            bind(CacheMode.class).annotatedWith(Names.named(InfinispanCacheConfig.CACHE_MODE)).to(
-                Key.get(CacheMode.class, Names.named(config.prefixed(InfinispanCacheConfig.CACHE_MODE))));
-            bind(int.class).annotatedWith(Names.named(InfinispanCacheConfig.MAX_ENTRIES)).to(
-                Key.get(int.class, Names.named(config.prefixed(InfinispanCacheConfig.MAX_ENTRIES))));
-            bind(Configuration.CacheMode.class).annotatedWith(Names.named(InfinispanCacheConfig.REPLICATION_MODE)).to(
-                Key.get(Configuration.CacheMode.class, 
-                    Names.named(config.prefixed(InfinispanCacheConfig.REPLICATION_MODE))));
-        }
-
-        @Override
-        protected void bindings() {
-            bind(CacheService.class).annotatedWith(annotation).to(InfinispanCacheService.class).in(Singleton.class);
-        }
-
-        @Override
-        protected void expose() {
+    @Override
+    protected void expose() {
+        if (annotation == null) {
+            expose(CacheService.class);
+        } else {
             expose(CacheService.class).annotatedWith(annotation);
         }
     }
-
 }
+
