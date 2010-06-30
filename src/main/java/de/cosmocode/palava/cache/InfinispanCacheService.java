@@ -16,14 +16,15 @@
 
 package de.cosmocode.palava.cache;
 
-import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+
 import org.infinispan.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 /**
  * Infinispan cache implementation of {@link CacheService}.

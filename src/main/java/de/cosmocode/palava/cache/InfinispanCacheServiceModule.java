@@ -16,13 +16,15 @@
 
 package de.cosmocode.palava.cache;
 
+import java.lang.annotation.Annotation;
+
+import org.infinispan.Cache;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import de.cosmocode.palava.core.inject.AbstractRebindModule;
-import org.infinispan.Cache;
 
-import java.lang.annotation.Annotation;
+import de.cosmocode.palava.core.inject.AbstractRebindModule;
 
 /**
  * @author Oliver Lorenz
