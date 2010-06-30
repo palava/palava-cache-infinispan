@@ -16,15 +16,24 @@
 
 package de.cosmocode.palava.cache;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import com.google.inject.BindingAnnotation;
 
 /**
+ * Binding annotation used by {@link InfinispanCacheService}.
+ * 
  * @author Tobias Sarnowski
  */
-@BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
+@Target({
+    ElementType.METHOD,
+    ElementType.PARAMETER
+})
+@BindingAnnotation
 @interface NamedCache {
+    
 }

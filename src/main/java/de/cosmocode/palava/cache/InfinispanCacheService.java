@@ -20,8 +20,6 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -33,7 +31,6 @@ import com.google.inject.Inject;
  */
 final class InfinispanCacheService implements CacheService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InfinispanCacheService.class);
     private static final String MAX_AGE_NEGATIVE = "Max age must not be negative, but was %s";
 
     private long maxAge = DEFAULT_MAX_AGE;
@@ -42,8 +39,9 @@ final class InfinispanCacheService implements CacheService {
     private Cache<Serializable, Object> cache;
 
     @Inject
-    public InfinispanCacheService(@NamedCache Cache cache) {
-        this.cache = cache;
+    @SuppressWarnings("unchecked")
+    public InfinispanCacheService(@NamedCache Cache<?, ?> cache) {
+        this.cache = (Cache<Serializable, Object>) Preconditions.checkNotNull(cache, "Cache");
     }
 
     @Override
@@ -65,7 +63,6 @@ final class InfinispanCacheService implements CacheService {
     public void setMaxAge(long newMaxAge, TimeUnit newMaxAgeUnit) {
         Preconditions.checkArgument(newMaxAge >= 0, MAX_AGE_NEGATIVE, newMaxAge);
         Preconditions.checkNotNull(newMaxAgeUnit, "MaxAge TimeUnit");
-
         this.maxAge = newMaxAge;
         this.maxAgeUnit = newMaxAgeUnit;
     }
@@ -88,7 +85,6 @@ final class InfinispanCacheService implements CacheService {
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkArgument(customMaxAge >= 0, MAX_AGE_NEGATIVE, customMaxAge);
         Preconditions.checkNotNull(customMaxAgeUnit, "MaxAge TimeUnit");
-
         cache.put(key, value, customMaxAge, customMaxAgeUnit);
     }
 
@@ -97,7 +93,6 @@ final class InfinispanCacheService implements CacheService {
     public <T> T read(Serializable key) {
         Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-
         return (T) cache.get(key);
     }
 
@@ -106,7 +101,6 @@ final class InfinispanCacheService implements CacheService {
     public <T> T remove(Serializable key) {
         Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-
         return (T) cache.remove(key);
     }
 
@@ -114,4 +108,5 @@ final class InfinispanCacheService implements CacheService {
     public void clear() {
         cache.clear();
     }
+    
 }
