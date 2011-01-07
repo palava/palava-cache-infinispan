@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  */
 final class InfinispanCacheService implements CacheService {
 
-    private Cache<Serializable, Object> cache;
+    private final Cache<Serializable, Object> cache;
 
     @Inject
     @SuppressWarnings("unchecked")
@@ -40,15 +40,12 @@ final class InfinispanCacheService implements CacheService {
 
     @Override
     public void store(Serializable key, Object value) {
-        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-
         cache.put(key, value);
     }
 
     @Override
     public void store(Serializable key, Object value, CacheExpiration expiration) {
-        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
         Preconditions.checkNotNull(expiration, "Expiration");
 
@@ -62,7 +59,6 @@ final class InfinispanCacheService implements CacheService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T read(Serializable key) {
-        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
         return (T) cache.get(key);
     }
@@ -70,7 +66,6 @@ final class InfinispanCacheService implements CacheService {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T remove(Serializable key) {
-        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
         return (T) cache.remove(key);
     }
