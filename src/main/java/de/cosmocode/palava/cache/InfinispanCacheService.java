@@ -17,7 +17,6 @@
 package de.cosmocode.palava.cache;
 
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 import org.infinispan.Cache;
 
@@ -31,11 +30,6 @@ import com.google.inject.Inject;
  */
 final class InfinispanCacheService implements CacheService {
 
-    private static final String MAX_AGE_NEGATIVE = "Max age must not be negative, but was %s";
-
-    private long maxAge = DEFAULT_MAX_AGE;
-    private TimeUnit maxAgeUnit = DEFAULT_MAX_AGE_TIMEUNIT;
-
     private Cache<Serializable, Object> cache;
 
     @Inject
@@ -45,47 +39,24 @@ final class InfinispanCacheService implements CacheService {
     }
 
     @Override
-    public long getMaxAge() {
-        return getMaxAge(TimeUnit.SECONDS);
-    }
-
-    @Override
-    public long getMaxAge(TimeUnit unit) {
-        return unit.convert(maxAge, maxAgeUnit);
-    }
-
-    @Override
-    public void setMaxAge(long maxAgeSeconds) {
-        setMaxAge(maxAgeSeconds, TimeUnit.SECONDS);
-    }
-
-    @Override
-    public void setMaxAge(long newMaxAge, TimeUnit newMaxAgeUnit) {
-        Preconditions.checkArgument(newMaxAge >= 0, MAX_AGE_NEGATIVE, newMaxAge);
-        Preconditions.checkNotNull(newMaxAgeUnit, "MaxAge TimeUnit");
-        this.maxAge = newMaxAge;
-        this.maxAgeUnit = newMaxAgeUnit;
-    }
-
-    @Override
     public void store(Serializable key, Object value) {
         Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
 
-        if (maxAge == DEFAULT_MAX_AGE && maxAgeUnit == DEFAULT_MAX_AGE_TIMEUNIT) {
-            cache.put(key, value);
-        } else {
-            cache.put(key, value, maxAge, maxAgeUnit);
-        }
+        cache.put(key, value);
     }
 
     @Override
-    public void store(Serializable key, Object value, long customMaxAge, TimeUnit customMaxAgeUnit) {
+    public void store(Serializable key, Object value, CacheExpiration expiration) {
         Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-        Preconditions.checkArgument(customMaxAge >= 0, MAX_AGE_NEGATIVE, customMaxAge);
-        Preconditions.checkNotNull(customMaxAgeUnit, "MaxAge TimeUnit");
-        cache.put(key, value, customMaxAge, customMaxAgeUnit);
+        Preconditions.checkNotNull(expiration, "Expiration");
+
+        // CacheExpiration considers 0 to be eternal, but infinispan considers negative values to be eternal
+        final long lifespan = expiration.getLifeTime() == 0 ? -1 : expiration.getLifeTime();
+        final long maxIdleTime = expiration.getIdleTime() == 0 ? -1 : expiration.getIdleTime();
+
+        cache.put(key, value, lifespan, expiration.getLifeTimeUnit(), maxIdleTime, expiration.getIdleTimeUnit());
     }
 
     @Override

@@ -23,6 +23,6 @@
         xmlns="urn:infinispan:config:4.0">
 
     <namedCache name="testcache">
-
+        <expiration lifespan="1" maxIdle="1" />
     </namedCache>
 </infinispan>
