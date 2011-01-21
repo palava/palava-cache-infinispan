@@ -29,7 +29,7 @@
     <dependency>
       <groupId>de.cosmocode.palava</groupId>
       <artifactId>palava-cache</artifactId>
-      <version>[3.0-SNAPSHOT,3)</version>
+      <version>[3.0,3)</version>
     </dependency>
     <dependency>
       <groupId>de.cosmocode.palava</groupId>
@@ -37,17 +37,17 @@
       <version>[1.0,2)</version>
     </dependency>
     <dependency>
-      <groupId>de.cosmocode.palava</groupId>
-      <artifactId>palava-cache</artifactId>
-      <version>[3.0-SNAPSHOT,3)</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>de.cosmocode</groupId>
       <artifactId>cosmocode-junit</artifactId>
       <scope>test</scope>
       <version>[1.2,2)</version>
+    </dependency>
+    <dependency>
+      <groupId>de.cosmocode.palava</groupId>
+      <artifactId>palava-cache</artifactId>
+      <version>[3.0,3)</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
