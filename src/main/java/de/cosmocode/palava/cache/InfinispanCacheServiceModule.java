@@ -18,13 +18,12 @@ package de.cosmocode.palava.cache;
 
 import java.lang.annotation.Annotation;
 
-import org.infinispan.Cache;
-
 import com.google.common.base.Preconditions;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
 import de.cosmocode.palava.core.inject.AbstractRebindModule;
+import org.infinispan.api.BasicCache;
 
 /**
  * Binds {@link CacheService} to {@link InfinispanCacheService}.
@@ -48,7 +47,7 @@ public final class InfinispanCacheServiceModule extends AbstractRebindModule {
 
     @Override
     protected void configuration() {
-        bind(Cache.class).annotatedWith(NamedCache.class).to(Key.get(Cache.class, Names.named(cacheName)));
+        bind(BasicCache.class).annotatedWith(NamedCache.class).to(Key.get(BasicCache.class, Names.named(cacheName)));
     }
 
     @Override

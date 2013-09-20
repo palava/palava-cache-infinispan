@@ -18,10 +18,9 @@ package de.cosmocode.palava.cache;
 
 import java.io.Serializable;
 
-import org.infinispan.Cache;
-
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import org.infinispan.api.BasicCache;
 
 /**
  * Infinispan cache implementation of {@link CacheService}.
@@ -30,12 +29,12 @@ import com.google.inject.Inject;
  */
 final class InfinispanCacheService implements CacheService {
 
-    private final Cache<Serializable, Object> cache;
+    private final BasicCache<Serializable, Object> cache;
 
     @Inject
     @SuppressWarnings("unchecked")
-    public InfinispanCacheService(@NamedCache Cache<?, ?> cache) {
-        this.cache = (Cache<Serializable, Object>) Preconditions.checkNotNull(cache, "Cache");
+    public InfinispanCacheService(@NamedCache BasicCache<?, ?> cache) {
+        this.cache = (BasicCache<Serializable, Object>) Preconditions.checkNotNull(cache, "Cache");
     }
 
     @Override
