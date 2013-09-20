@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.cosmocode.palava</groupId>
   <artifactId>palava-cache-infinispan</artifactId>
-  <version>1.2.0</version>
+  <version>1.2-SNAPSHOT</version>
   <name>Palava Cache Infinispan</name>
   <scm>
     <developerConnection>scm:git:git@github.com:palava/${project.artifactId}.git</developerConnection>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>de.cosmocode.palava</groupId>
       <artifactId>palava-infinispan</artifactId>
-      <version>[2.0,3)</version>
+      <version>[1.0,2)</version>
     </dependency>
     <dependency>
       <groupId>de.cosmocode</groupId>
