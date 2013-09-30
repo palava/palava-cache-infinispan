@@ -16,11 +16,14 @@
 
 package de.cosmocode.palava.cache;
 
-import java.io.Serializable;
-
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import org.infinispan.api.BasicCache;
+import org.infinispan.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Infinispan cache implementation of {@link CacheService}.
@@ -29,43 +32,80 @@ import org.infinispan.api.BasicCache;
  */
 final class InfinispanCacheService implements CacheService {
 
-    private final BasicCache<Serializable, Object> cache;
+    private static final Logger LOG = LoggerFactory.getLogger(InfinispanCacheService.class);
+    private static final String MAX_AGE_NEGATIVE = "Max age must not be negative, but was %s";
+
+    private long maxAge = DEFAULT_MAX_AGE;
+    private TimeUnit maxAgeUnit = DEFAULT_MAX_AGE_TIMEUNIT;
+
+    private Cache<Serializable, Object> cache;
 
     @Inject
-    @SuppressWarnings("unchecked")
-    public InfinispanCacheService(@NamedCache BasicCache<?, ?> cache) {
-        this.cache = (BasicCache<Serializable, Object>) Preconditions.checkNotNull(cache, "Cache");
+    public InfinispanCacheService(@NamedCache Cache cache) {
+        this.cache = cache;
+    }
+
+    @Override
+    public long getMaxAge() {
+        return getMaxAge(TimeUnit.SECONDS);
+    }
+
+    @Override
+    public long getMaxAge(TimeUnit unit) {
+        return unit.convert(maxAge, maxAgeUnit);
+    }
+
+    @Override
+    public void setMaxAge(long maxAgeSeconds) {
+        setMaxAge(maxAgeSeconds, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void setMaxAge(long newMaxAge, TimeUnit newMaxAgeUnit) {
+        Preconditions.checkArgument(newMaxAge >= 0, MAX_AGE_NEGATIVE, newMaxAge);
+        Preconditions.checkNotNull(newMaxAgeUnit, "MaxAge TimeUnit");
+
+        this.maxAge = newMaxAge;
+        this.maxAgeUnit = newMaxAgeUnit;
     }
 
     @Override
     public void store(Serializable key, Object value) {
+        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-        cache.put(key, value);
+
+        if (maxAge == DEFAULT_MAX_AGE && maxAgeUnit == DEFAULT_MAX_AGE_TIMEUNIT) {
+            cache.put(key, value);
+        } else {
+            cache.put(key, value, maxAge, maxAgeUnit);
+        }
     }
 
     @Override
-    public void store(Serializable key, Object value, CacheExpiration expiration) {
+    public void store(Serializable key, Object value, long customMaxAge, TimeUnit customMaxAgeUnit) {
+        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
-        Preconditions.checkNotNull(expiration, "Expiration");
+        Preconditions.checkArgument(customMaxAge >= 0, MAX_AGE_NEGATIVE, customMaxAge);
+        Preconditions.checkNotNull(customMaxAgeUnit, "MaxAge TimeUnit");
 
-        // CacheExpiration considers 0 to be eternal, but infinispan considers negative values to be eternal
-        final long lifespan = expiration.getLifeTime() == 0 ? -1 : expiration.getLifeTime();
-        final long maxIdleTime = expiration.getIdleTime() == 0 ? -1 : expiration.getIdleTime();
-
-        cache.put(key, value, lifespan, expiration.getLifeTimeUnit(), maxIdleTime, expiration.getIdleTimeUnit());
+        cache.put(key, value, customMaxAge, customMaxAgeUnit);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T read(Serializable key) {
+        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
+
         return (T) cache.get(key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T remove(Serializable key) {
+        Preconditions.checkState(cache != null, "Cache is not initialized");
         Preconditions.checkNotNull(key, "Key");
+
         return (T) cache.remove(key);
     }
 
@@ -73,5 +113,4 @@ final class InfinispanCacheService implements CacheService {
     public void clear() {
         cache.clear();
     }
-    
 }

@@ -17,10 +17,12 @@
 
 -->
 
-<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:infinispan:config:5.3 http://docs.jboss.org/infinispan/schemas/infinispan-config-5.3.xsd"
-        xmlns="urn:infinispan:config:5.3">
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:4.0 infinispan-config-4.0.xsd"
+        xmlns="urn:infinispan:config:4.0">
+
     <namedCache name="testcache">
-        <expiration lifespan="1" maxIdle="1" />
+
     </namedCache>
 </infinispan>

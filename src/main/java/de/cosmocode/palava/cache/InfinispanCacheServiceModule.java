@@ -16,18 +16,15 @@
 
 package de.cosmocode.palava.cache;
 
-import java.lang.annotation.Annotation;
-
 import com.google.common.base.Preconditions;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-
 import de.cosmocode.palava.core.inject.AbstractRebindModule;
-import org.infinispan.api.BasicCache;
+import org.infinispan.Cache;
+
+import java.lang.annotation.Annotation;
 
 /**
- * Binds {@link CacheService} to {@link InfinispanCacheService}.
- * 
  * @author Oliver Lorenz
  */
 public final class InfinispanCacheServiceModule extends AbstractRebindModule {
@@ -36,23 +33,25 @@ public final class InfinispanCacheServiceModule extends AbstractRebindModule {
     private final Class<? extends Annotation> annotation;
 
     public InfinispanCacheServiceModule(String cacheName) {
-        this.cacheName = Preconditions.checkNotNull(cacheName, "CacheName");
+        Preconditions.checkNotNull(cacheName, "CacheName");
+        this.cacheName = cacheName;
         this.annotation = null;
     }
 
     public InfinispanCacheServiceModule(String cacheName, Class<? extends Annotation> annotation) {
-        this.cacheName = Preconditions.checkNotNull(cacheName, "CacheName");
-        this.annotation = Preconditions.checkNotNull(annotation, "Annotation");
+        Preconditions.checkNotNull(cacheName, "CacheName");
+        Preconditions.checkNotNull(annotation, "Annotation");
+        this.cacheName = cacheName;
+        this.annotation = annotation;
     }
 
     @Override
     protected void configuration() {
-        bind(BasicCache.class).annotatedWith(NamedCache.class).to(Key.get(BasicCache.class, Names.named(cacheName)));
+        bind(Cache.class).annotatedWith(NamedCache.class).to(Key.get(Cache.class, Names.named(cacheName)));
     }
 
     @Override
     protected void optionals() {
-        // no optional configuration entries
     }
 
     @Override
@@ -72,5 +71,5 @@ public final class InfinispanCacheServiceModule extends AbstractRebindModule {
             expose(CacheService.class).annotatedWith(annotation);
         }
     }
-    
 }
+

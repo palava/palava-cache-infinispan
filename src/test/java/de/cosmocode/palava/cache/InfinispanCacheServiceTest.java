@@ -16,13 +16,15 @@
 
 package de.cosmocode.palava.cache;
 
-import java.io.IOException;
-import java.net.URL;
-
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * Tests {@link de.cosmocode.palava.cache.InfinispanCacheService} as a CacheService.
@@ -31,34 +33,29 @@ import org.junit.BeforeClass;
  */
 public class InfinispanCacheServiceTest extends CacheServiceTest {
 
-    private static EmbeddedCacheManager manager;
+    private static final Logger LOG = LoggerFactory.getLogger(InfinispanCacheServiceTest.class);
 
-    /**
-     * Runs before class.
-     */
+    private static EmbeddedCacheManager embeddedCacheManager;
+
     @BeforeClass
-    public static void beforeClass() {
-        final URL config = InfinispanCacheServiceTest.class.getClassLoader().getResource("infinispan.xml");
+    public static void startCache() {
+        URL config = InfinispanCacheServiceTest.class.getClassLoader().getResource("infinispan.xml");
 
         try {
-            manager = new DefaultCacheManager(config.openStream());
+            embeddedCacheManager = new DefaultCacheManager(config.openStream());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-        manager.start();
+        embeddedCacheManager.start();
     }
 
     @Override
     public CacheService unit() {
-        return new InfinispanCacheService(manager.getCache("testcache"));
+        return new InfinispanCacheService(embeddedCacheManager.getCache("testcache"));
     }
 
-    /**
-     * Runs after class.
-     */
     @AfterClass
-    public static void afterClass() {
-        manager.stop();
+    public static void stopCache() {
+        embeddedCacheManager.stop();
     }
-    
 }
