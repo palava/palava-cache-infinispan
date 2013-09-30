@@ -22,9 +22,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * Annotation for a named cache ...
+ *
  * @author Tobias Sarnowski
  */
 @BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
 @interface NamedCache {
 }
+

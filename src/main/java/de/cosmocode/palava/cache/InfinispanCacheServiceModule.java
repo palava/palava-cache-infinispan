@@ -25,6 +25,8 @@ import org.infinispan.Cache;
 import java.lang.annotation.Annotation;
 
 /**
+ * This module binds the Infinispan Cache Service to CacheService.
+ *
  * @author Oliver Lorenz
  */
 public final class InfinispanCacheServiceModule extends AbstractRebindModule {
